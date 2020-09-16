@@ -1,0 +1,83 @@
+<head>
+    <title>Yaoyorozu</title>
+    <!--<link rel = "stylesheet" type = "text/css" href = "./main.css">-->
+
+    <script>
+        var list;
+        const max = 50000;
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        /*async function getAnime(list) {
+            //place new anime into list
+            rand = Math.floor(Math.random() * max);
+            response = await fetch("https://api.jikan.moe/v3/anime/" + rand);
+
+            while(response["status"] == 404) {
+                sleep(2000);
+                Math.floor(Math.random() * max);
+                response = await fetch("https://api.jikan.moe/v3/anime/" + rand);
+            }
+
+            list.push(response);
+        }
+
+        function setAnime(list) {
+            //put anime from list to tag
+            tag = document.getElementById("anime");
+
+            tag.innerHTML = list[0]["title"];
+            list.shift();
+            getAnime(list);
+        }
+
+        async function initialise() {
+            console.log("ini");
+            for (i = 0; i < 5; i++) {
+                await getAnime();
+            }
+            //console.log(list);
+        }*/
+
+        async function getsetAnime() {
+            tag = document.getElementById("anime");
+            tag.innerHTML = "Loading...";
+            tag.href = "";
+            attempt = 0;
+
+            //place new anime into list
+            do {
+                await sleep(1000);
+                rand = Math.floor(Math.random() * max);
+                response = await fetch("https://api.jikan.moe/v3/anime/" + rand);
+                console.log(response.status);
+                attempt++;
+                tag.innerHTML = "Fail " + attempt;
+            } while (response.status == "404")
+
+            console.log(rand);
+            data = await response.json();
+            tag.innerHTML = data["title"];
+            tag.href="https://myanimelist.net/anime/" + rand;
+            document.getElementById("image").src = data["image_url"];
+        }
+    </script>
+</head>
+<body>
+    <h1>Yaoyorozu</h1>
+    Endless anime generated just in time
+    <br>
+
+    <button onclick="getsetAnime()">GENERATE</button>
+    <div>
+        <a id="anime"></a>
+        <br>
+        <img id="image">
+    </div>
+
+    <script>
+        //window.onload = getsetAnime();
+    </script>
+</body>
